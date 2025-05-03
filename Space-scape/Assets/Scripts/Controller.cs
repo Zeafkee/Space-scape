@@ -10,14 +10,20 @@ public class Controller : MonoBehaviour
     private int currentIndex = 0;
     private bool isReturning = false;
     private bool isMoving = false;
-
+    [SerializeField]
     private List<Transform> pathPoints;
+    [SerializeField]
     private List<Transform> visitedPoints = new List<Transform>();
     private Vector3 startPos;
+    public PathManager pathManager;
 
     private void Start()
     {
-        pathPoints = PathManager.instance.pathPoints;
+        PathManager pathManager = GetComponentInParent<PathManager>();
+        if (pathManager != null)
+        {
+            pathPoints = pathManager.pathPoints;
+        }
         startPos = transform.position;
     }
 
