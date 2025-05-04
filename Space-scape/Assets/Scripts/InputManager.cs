@@ -11,7 +11,7 @@ public class InputManager : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit, 250f, spaceshipLayer))
+            if (Physics.Raycast(ray, out hit, 400f, spaceshipLayer))
             {
                 Controller spaceship = hit.collider.GetComponent<Controller>();
                 if (spaceship != null)

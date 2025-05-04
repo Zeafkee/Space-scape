@@ -7,39 +7,39 @@ public class Controller : MonoBehaviour
     public float detectionDistance = 0.5f;
     public LayerMask obstacleLayer;
 
-    private int currentIndex = 0;
-    private bool isReturning = false;
-    private bool isMoving = false;
+    public int currentIndex = 0;
+    public bool isReturning = false;
+    public bool isMoving = false;
+
+    [SerializeField] private List<int> pathIndexes; 
     [SerializeField]
-    private List<Transform> pathPoints;
+    private List<Transform> pathPoints = new List<Transform>();
     [SerializeField]
     private List<Transform> visitedPoints = new List<Transform>();
+
     private Vector3 startPos;
-    public PathManager pathManager;
+    public Transform target;
+
+    public void SetPath(List<Transform> points)
+    {
+        pathPoints = points;
+    }
 
     private void Start()
     {
-        PathManager pathManager = GetComponentInParent<PathManager>();
-        if (pathManager != null)
-        {
-            pathPoints = pathManager.pathPoints;
-        }
         startPos = transform.position;
-    }
 
-    private void Update()
-    {
-        if (!isMoving) return;
-
-        if (ObstacleAhead())
+        foreach (int index in pathIndexes)
         {
-            if (!isReturning)
+            if (index >= 0 && index < ShipManager.Instance.waypointonseen.Count)
             {
-                StartReturn();
+                pathPoints.Add(ShipManager.Instance.waypointonseen[index]);
             }
+
+            LevelManager.Instance.AddCar(this.GetComponent<Controller>());
         }
 
-        Move();
+       // StartMovement();
     }
 
     public void StartMovement()
@@ -50,19 +50,32 @@ public class Controller : MonoBehaviour
         visitedPoints.Clear();
     }
 
+    public void ManagedUpdate()
+    {
+        if (!isMoving) return;
+
+        if (ObstacleAhead())
+        {
+            if (!isReturning)
+                StartReturn();
+        }
+
+        Move();
+    }
+
     void Move()
     {
-        Transform target;
-
+        Debug.Log("zzzzzzzzzzz");
         if (!isReturning)
         {
             if (currentIndex >= pathPoints.Count)
             {
-                Destroy(gameObject);
+                isMoving = false;
                 return;
             }
 
             target = pathPoints[currentIndex];
+            Debug.Log("hhhhhhhhhhhh");
         }
         else
         {
@@ -71,23 +84,24 @@ public class Controller : MonoBehaviour
                 StopReturn();
                 return;
             }
-
             target = visitedPoints[currentIndex];
+            Debug.Log("hahaha");
         }
 
         Vector3 dir = (target.position - transform.position).normalized;
         transform.position += dir * moveSpeed * Time.deltaTime;
         transform.forward = dir;
 
-        if (Vector3.Distance(transform.position, target.position) < 0.1f)
+        if (Vector3.Distance(transform.position, target.position) < 0.2f)
         {
             if (!isReturning)
                 visitedPoints.Add(pathPoints[currentIndex]);
 
             currentIndex++;
         }
+        if (currentIndex == pathPoints.Count)
+            LevelManager.Instance.DeleteCar(this.gameObject);
     }
-
     bool ObstacleAhead()
     {
         return Physics.Raycast(transform.position, transform.forward, detectionDistance, obstacleLayer);
