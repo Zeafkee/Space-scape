@@ -155,9 +155,13 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 192
+  currentIndex: 0
+  isReturning: 0
+  isMoving: 0
+  pathIndexes: 030000000400000005000000
   pathPoints: []
   visitedPoints: []
-  pathManager: {fileID: 0}
+  target: {fileID: 0}
 --- !u!1001 &7534484902237709016
 PrefabInstance:
   m_ObjectHideFlags: 0

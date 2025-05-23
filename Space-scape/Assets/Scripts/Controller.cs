@@ -65,7 +65,6 @@ public class Controller : MonoBehaviour
 
     void Move()
     {
-        Debug.Log("zzzzzzzzzzz");
         if (!isReturning)
         {
             if (currentIndex >= pathPoints.Count)
@@ -75,7 +74,6 @@ public class Controller : MonoBehaviour
             }
 
             target = pathPoints[currentIndex];
-            Debug.Log("hhhhhhhhhhhh");
         }
         else
         {
@@ -85,7 +83,6 @@ public class Controller : MonoBehaviour
                 return;
             }
             target = visitedPoints[currentIndex];
-            Debug.Log("hahaha");
         }
 
         Vector3 dir = (target.position - transform.position).normalized;
@@ -99,7 +96,7 @@ public class Controller : MonoBehaviour
 
             currentIndex++;
         }
-        if (currentIndex == pathPoints.Count)
+        if (currentIndex == pathPoints.Count && !isReturning)
             LevelManager.Instance.DeleteCar(this.gameObject);
     }
     bool ObstacleAhead()
